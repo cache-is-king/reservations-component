@@ -3,7 +3,9 @@ const faker = require('faker')
 const fs = require('fs');
 
 
+
 //make a reservationSize array for reservation Size distribution
+
 const reservationSizes = PD.rpois(1000, 50)
 
 const capitalize = (str) => {
@@ -17,8 +19,6 @@ const capitalize = (str) => {
   .join(' ');
   return output;
 }
-
-
 
 const shuffleString = (string) => {
   let stringArray = string.split('')
@@ -39,8 +39,8 @@ const getRandomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 } 
 
-
 const genRestName = (iteration) => {
+
 
   const randomFn = {
     0: () => {
@@ -111,6 +111,7 @@ for (let i = 0; i < 10; i += 1) {
 let counter = 0
 for (let i = 0; i < 5000000; i += 1) {
   console.log(i)
+
   const restName = capitalize(genRestName());
   if (i % 1000000 === 0) {
     console.log("GOT ", i)
@@ -139,5 +140,4 @@ const jsonString = JSON.stringify(toFile, null, 2);
 console.log(jsonString.length);
 // console.log(JSON.stringify(toFile).length);
 
-fs.writeFileSync(`./data/output${iteration + 1}.js`, jsonString);
-*/
+
