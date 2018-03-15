@@ -7,6 +7,8 @@ bundle-prod.js
 
 coverage/
 
+restaurants/data
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
