@@ -2,10 +2,8 @@ const PD = require('probability-distributions')
 const faker = require('faker')
 const fs = require('fs');
 
-let iteration = 7
 
 //make a reservationSize array for reservation Size distribution
-console.log(iteration)
 const reservationSizes = PD.rpois(1000, 50)
 
 const capitalize = (str) => {
@@ -20,7 +18,7 @@ const capitalize = (str) => {
   return output;
 }
 
-const output = {};
+
 
 const shuffleString = (string) => {
   let stringArray = string.split('')
@@ -42,7 +40,7 @@ const getRandomBetween = (min, max) => {
 } 
 
 
-const genRestName = () => {
+const genRestName = (iteration) => {
 
   const randomFn = {
     0: () => {
@@ -74,12 +72,42 @@ const genRestName = () => {
     },
     9: () => {
       return shuffleString(faker.company.bs()) + ' for ' + shuffleString(faker.lorem.word()) + 's.'
-    }
+    },
   };
 
   return randomFn[iteration]();
 };
 
+for (let i = 0; i < 10; i += 1) {
+  const output = {};
+  let duplicateTracker = 0;
+  for (let j = 0; j < 5000000; j += 1) {
+    const restName = capitalize(genRestName(i));
+    if (j % 1000000 === 0) {
+      console.log('GOT ', j);
+      console.log('UNIQUE: ', j - duplicateTracker);
+    }
+    if (output[restName]) {
+      duplicateTracker += 1;
+    }
+    if (j - duplicateTracker === 1000000) {
+      console.log('hi')
+      break
+    }
+    output[restName] = true
+  }
+
+  const toFile = Object.keys(output).map(
+    (output, index) => {
+      return {id: i * 1000000 + index, name: output, seats: reservationSizes[getRandomBetween(0, 1000)] };
+    });
+
+  const jsonString = JSON.stringify(toFile, null, 2);
+  console.log(`writing to file ${i + 1}`)
+  fs.writeFileSync(`./data/output${i + 1}.js`, `module.exports = ${jsonString}`)
+}
+
+/*
 let counter = 0
 for (let i = 0; i < 5000000; i += 1) {
   console.log(i)
@@ -112,3 +140,4 @@ console.log(jsonString.length);
 // console.log(JSON.stringify(toFile).length);
 
 fs.writeFileSync(`./data/output${iteration + 1}.js`, jsonString);
+*/
