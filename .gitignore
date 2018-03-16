@@ -12,6 +12,7 @@ restaurants/csv-data
 reservations/data
 reservations/csv-data
 
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

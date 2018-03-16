@@ -18,6 +18,7 @@ const capitalize = (str) => {
   return output;
 };
 
+
 const shuffleString = (string) => {
   const stringArray = string.split('');
   const characterNumber = stringArray.length;
@@ -37,8 +38,8 @@ const getRandomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-
 const genRestName = (iteration) => {
+
 
   const randomFn = {
     0: () => {
@@ -101,6 +102,7 @@ for (let i = 0; i < 10; i += 1) {
     });
 
   const jsonString = JSON.stringify(toFile, null, 2);
-  console.log(`writing to file ${i + 1}`);
-  fs.writeFileSync(`./data/output${i + 1}.js`, `module.exports = ${jsonString}`);
+
+  console.log(`writing to file ${i + 1}`)
+  fs.writeFileSync(`./data/output${i + 1}.js`, `module.exports = ${jsonString}`)
 }
