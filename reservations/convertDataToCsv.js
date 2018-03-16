@@ -7,8 +7,13 @@ for (let i = 0; i < 10; i += 1) {
   let currentFileLength = fileToImport.length;
   for (let j = currentFileLength - 1; j >= 0; j -= 1) {
     let currentReservation = fileToImport.pop();
+    finalString += `${currentReservation.id},${currentReservation.restaurantid},${currentReservation.date},${currentReservation.time},${currentReservation.name},${currentReservation.party},${currentReservation.timestamp}\n`;
+
+    /*
     finalString += currentReservation.id + ',' + currentReservation.restaurantid + ',' + currentReservation.date + ',' + 
     currentReservation.time + ',' + currentReservation.name + ',' + currentReservation.party + ',' + currentReservation.timestamp + '\n';
+
+    */
     if (j === 0) {
       console.log(`WRITING TO CSV FILE ./csv-data/reservationsAsCsv${i + 1}.csv`);
       fs.writeFileSync(`./csv-data/reservationsAsCsv${i + 1}.csv`, finalString);
