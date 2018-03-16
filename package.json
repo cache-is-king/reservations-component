@@ -80,6 +80,7 @@
     "moment-timezone": "^0.5.14",
     "morgan": "^1.9.0",
     "pg": "^7.4.1",
+    "probability-distributions": "^0.9.1",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-day-picker": "^7.0.7",
