@@ -46,14 +46,16 @@ const addReservation = (i, date, time, partySize) => {
 for (let i = 0; i < 1000000; i += 1) {
   const existingReservations = {};
 
+
+
   const numberReservationsNeeded = numberReservations[getRandomBetween(0, 150)];
   let reservationCountTracker = 0;
   while (reservationCountTracker < numberReservationsNeeded) {
     let partySize = getRandomBetween(1, 11);
-    let date = faker.date.between('03-14-2018', '06-15-2018')
-    date = date.toString().slice(4, 15).split(' ')
-    date[0] = monthDictionary[date[0]]
-    date = date.join('-')
+    let date = faker.date.between('03-15-2018', '04-15-2018');
+    date = date.toString().slice(4, 15).split(' ');
+    date[0] = monthDictionary[date[0]];
+    date = date.join('-');
     let time = getRandomBetween(17, 23);
 
     if (existingReservations[[date, time]] === undefined) {
@@ -62,11 +64,16 @@ for (let i = 0; i < 1000000; i += 1) {
       addReservation(i, date, time, partySize);
       currId += 1;
     }
-    else if (partySize < restaurants[i].seats) {
+    else if (partySize <= existingReservations[[date, time]]) {
       existingReservations[[date, time]] = existingReservations[[date, time]] - partySize;
       reservationCountTracker += 1;
       addReservation(i, date, time, partySize);
       currId += 1;
+    }
+    else {
+      console.log("nope, too big yo");
+      console.log("You wanted: ", partySize, " for restaurant ", i);
+      console.log("But we only got: ", existingReservations[[date, time]]);
     }
   }
   if ((i + 1) % 100000 === 0) {

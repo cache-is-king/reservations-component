@@ -4,7 +4,7 @@ const fs = require('fs');
 
 
 //make a reservationSize array for reservation Size distribution
-const reservationSizes = PD.rpois(1000, 50)
+const reservationSizes = PD.rpois(1000, 30)
 
 const capitalize = (str) => {
   const words = str.split(' ');
