@@ -17,8 +17,6 @@ const getRandomBetween = (min, max) => {
 const todayDate = '03-15-2018';
 const oneMonthFromNow = '04-15-2018';
 let allReservationsArray = [];
-let allSlotsString = '';
-let currSlotId = 0;
 let currId = 0;
 
 const addReservation = (i, date, time, partySize) => {
@@ -30,7 +28,7 @@ const addReservation = (i, date, time, partySize) => {
     name: faker.name.firstName(),
     party: partySize,
     timestamp: '03-15-2018',
-  }); 
+  });
 };
 
 for (let i = 0; i < 1000000; i += 1) {

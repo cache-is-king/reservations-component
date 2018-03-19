@@ -15,6 +15,7 @@ reservations/data
 reservations/csv-data
 slots/csv-files
 slots/seatsOnly.js
+mongo-work/data-generation/data
 
 
 
