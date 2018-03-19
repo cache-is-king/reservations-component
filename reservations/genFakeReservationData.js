@@ -21,8 +21,6 @@ let allSlotsString = '';
 let currSlotId = 0;
 let currId = 0;
 
-// ****************initializing the slots Tracker for the helper table**********************
-
 const addReservation = (i, date, time, partySize) => {
   allReservationsArray.push({
     id: currId,
@@ -33,7 +31,6 @@ const addReservation = (i, date, time, partySize) => {
     party: partySize,
     timestamp: '03-15-2018',
   }); 
-  // update slots tracker here
 };
 
 for (let i = 0; i < 1000000; i += 1) {
@@ -57,9 +54,6 @@ for (let i = 0; i < 1000000; i += 1) {
       currId += 1;
     }
   }
-
-  // update slots tracker here
-  // every time you go through a restaurant, update the slots tracker
 
   if ((i + 1) % 100000 === 0) {
     console.log('CREATED RESERVATIONS FOR ', (i + 1), ' RESTAURANTS');
