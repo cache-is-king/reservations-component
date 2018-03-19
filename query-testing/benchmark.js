@@ -59,38 +59,3 @@ db.client.query('SELECT * FROM reservations WHERE restaurantid = ($1)', [789], (
     });
   }
 });
-
-// console.time('query for all reservations for a given restaurant with upper-end ID')
-
-// db.client.query('SELECT * FROM reservations WHERE restaurantid = ($1)', [9898900], (err, data) => {
-//   if (err) {
-//     console.error(err)
-//   } else {
-//     console.log(data.rows)
-//     console.timeEnd('query for all reservations for a given restaurant with upper-end ID')
-//     db.client.end()
-//   }
-// })
-
-// const todayStr = moment(new Date()).tz('America/Los_Angeles').format('YYYY-MM-DD');
-// console.time('query for getting the count of reservations made for a restaurant on today\'s date');
-// db.client.query('SELECT COUNT(id) FROM reservations WHERE restaurantid = ($1) AND timestamp = ($2)', [560934, '03-15-2018'], (err, data) => {
-//   if (err) {
-//     console.error(err)
-//   } else {
-//     console.log(data.rows)
-//     console.timeEnd('query for getting the count of reservations made for a restaurant on today\'s date');
-//     db.client.end()
-//   }
-// });
-
-// console.time('query for getting the count of reservations made for a restaurant on today\'s date');
-// db.client.query('SELECT COUNT(id) FROM reservations WHERE restaurantid = ($1) AND timestamp = ($2)', [560934, '03-15-2018'], (err, data) => {
-//   if (err) {
-//     console.error(err)
-//   } else {
-//     console.log(data.rows)
-//     console.timeEnd('query for getting the count of reservations made for a restaurant on today\'s date');
-//     db.client.end()
-//   }
-// });
