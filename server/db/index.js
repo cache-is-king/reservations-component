@@ -9,7 +9,7 @@ const client = new Client({
   user: process.env.RDS_USERNAME,
   password: process.env.RDS_PASSWORD,
   host: process.env.RDS_HOSTNAME,
-  database: process.env.RDS_DB_NAME,
+  database: process.env.RDS_DB_NAME || 'restaurant_reservations',
   port: process.env.RDS_PORT,
 });
 
@@ -40,6 +40,13 @@ const getOpenSeats = ({
   [date, restaurantId],
 );
 
+const newGetOpenSeats = ({
+  restaurantId, date,
+}) => client.query(
+  'SELECT time,seats_remaining AS remaining FROM slots WHERE date=$1 AND restaurantid=$2',
+  [date, restaurantId],
+);
+
 
 const getMaxSeats = restaurantId => client.query(
   'SELECT seats FROM restaurants WHERE id=$1',
@@ -49,7 +56,7 @@ const getMaxSeats = restaurantId => client.query(
 
 const genReservationSlots = ({ restaurantId, date }) => Promise.all([
   bookingsToday(restaurantId),
-  getOpenSeats({ restaurantId, date }),
+  newGetOpenSeats({ restaurantId, date }),
   getMaxSeats(restaurantId),
 ])
   .then((results) => {
@@ -116,4 +123,5 @@ module.exports = {
   genReservationSlots,
   addReservation,
   addRestaurantInfo,
+  newGetOpenSeats,
 };

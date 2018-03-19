@@ -12,13 +12,19 @@ const getRandomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-// ******************make fake data***********************
+// *********************************make fake data******************************************
 
-let finalDataArray = [];
+const todayDate = '03-15-2018';
+const oneMonthFromNow = '04-15-2018';
+let allReservationsArray = [];
+let allSlotsString = '';
+let currSlotId = 0;
 let currId = 0;
 
+// ****************initializing the slots Tracker for the helper table**********************
+
 const addReservation = (i, date, time, partySize) => {
-  finalDataArray.push({
+  allReservationsArray.push({
     id: currId,
     restaurantid: i,
     date,
@@ -26,7 +32,8 @@ const addReservation = (i, date, time, partySize) => {
     name: faker.name.firstName(),
     party: partySize,
     timestamp: '03-15-2018',
-  });
+  }); 
+  // update slots tracker here
 };
 
 for (let i = 0; i < 1000000; i += 1) {
@@ -36,7 +43,7 @@ for (let i = 0; i < 1000000; i += 1) {
 
   while (reservationCountTracker < numberReservationsNeeded) {
     let partySize = getRandomBetween(1, 11);
-    let date = faker.date.between('03-15-2018', '04-15-2018');
+    let date = faker.date.between(todayDate, oneMonthFromNow);
     date = date.toISOString().slice(0, 10);
     let time = getRandomBetween(17, 23);
 
@@ -48,17 +55,17 @@ for (let i = 0; i < 1000000; i += 1) {
       reservationCountTracker += 1;
       addReservation(i, date, time, partySize);
       currId += 1;
-    } else {
-      console.log("nope, too big yo");
-      console.log("You wanted: ", partySize, " for restaurant ", i);
-      console.log("But we only got: ", existingReservations[[date, time]]);
     }
   }
+
+  // update slots tracker here
+  // every time you go through a restaurant, update the slots tracker
+
   if ((i + 1) % 100000 === 0) {
     console.log('CREATED RESERVATIONS FOR ', (i + 1), ' RESTAURANTS');
-    const jsonString = 'module.exports = ' + JSON.stringify(finalDataArray, null, 2);
+    const jsonString = 'module.exports = ' + JSON.stringify(allReservationsArray, null, 2);
     fs.writeFileSync(`./data/reservationsJson${(i + 1) / 100000}.js`, jsonString);
-    finalDataArray = [];
+    allReservationsArray = [];
   }
 }
 

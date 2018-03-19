@@ -7,10 +7,15 @@ bundle-prod.js
 
 coverage/
 
+
+#Large data files
 restaurants/data
 restaurants/csv-data
 reservations/data
 reservations/csv-data
+slots/csv-files
+slots/seatsOnly.js
+
 
 
 # Elastic Beanstalk Files
