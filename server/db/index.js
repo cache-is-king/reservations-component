@@ -56,7 +56,7 @@ const getMaxSeats = restaurantId => client.query(
 
 const genReservationSlots = ({ restaurantId, date }) => Promise.all([
   bookingsToday(restaurantId),
-  newGetOpenSeats({ restaurantId, date }),
+  getOpenSeats({ restaurantId, date }),
   getMaxSeats(restaurantId),
 ])
   .then((results) => {
