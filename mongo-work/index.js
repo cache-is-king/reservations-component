@@ -44,7 +44,10 @@ newRestaurant.save(function(err) {
 })
 */
 
-
+/*
 Restaurant.init().then(() => {
 	mongoose.disconnect();
 });
+*/
+
+module.exports.Restaurant = Restaurant

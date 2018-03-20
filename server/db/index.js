@@ -33,12 +33,12 @@ const bookingsToday = (restaurantId) => {
   );
 };
 
-const getOpenSeats = ({
-  restaurantId, date,
-}) => client.query(
-  'SELECT time,(MAX(restaurants.seats)-SUM(party)) AS remaining FROM reservations INNER JOIN restaurants ON restaurants.id = reservations.restaurantid WHERE date=$1 AND restaurantid=$2 GROUP BY time',
-  [date, restaurantId],
-);
+// const getOpenSeats = ({
+//   restaurantId, date,
+// }) => client.query(
+//   'SELECT time,(MAX(restaurants.seats)-SUM(party)) AS remaining FROM reservations INNER JOIN restaurants ON restaurants.id = reservations.restaurantid WHERE date=$1 AND restaurantid=$2 GROUP BY time',
+//   [date, restaurantId],
+// );
 
 const newGetOpenSeats = ({
   restaurantId, date,
@@ -56,7 +56,7 @@ const getMaxSeats = restaurantId => client.query(
 
 const genReservationSlots = ({ restaurantId, date }) => Promise.all([
   bookingsToday(restaurantId),
-  getOpenSeats({ restaurantId, date }),
+  newGetOpenSeats({ restaurantId, date }),
   getMaxSeats(restaurantId),
 ])
   .then((results) => {
@@ -100,13 +100,64 @@ const addReservation = ({
     if (requestedSlot.remaining >= party) {
       return client.query(
         'INSERT INTO reservations (restaurantid, date, time, name, party) VALUES ($1,$2,$3,$4,$5)',
-        [restaurantId, date, time, name, party],
+        [restaurantId, date, time, name, party], (err, data) => {
+          if (err) {
+            console.log(err);
+          } else {
+            updateSlots({ restaurantId, time, date, party })
+          }
+        }
       );
     }
     // console.log('genReservationSlots throws error');
     throw new Error('Restaurant cannot take a party of that size!');
   });
 
+const updateSlots = ({
+  restaurantId, time, date, party,
+}) => client.query(
+  'SELECT id,seats_remaining AS remaining FROM slots WHERE restaurantid = ($1) AND time = ($2) AND date = ($3)',
+  [restaurantId, time, date], (err, data) => {
+    if (err) {
+      console.log(err)
+    } else {
+      const slot = data.rows[0]
+      console.log(slot)
+      if (slot) {
+        updateSingleSlot({ slotId: slot.id, seatsRemaining: slot.remaining - party });
+      }
+      else {
+        console.log('we are going to add a slot')
+        addSlot({date, time, restaurantId, party})
+      }
+    }
+  })
+
+const addSlot = ({
+  date, time, restaurantId, party
+}) => client.query(
+  'SELECT seats FROM restaurants WHERE id = ($1)', [restaurantId], (err, data) => {
+    if (err) {
+      console.log(err)
+    } else {
+      client.query('INSERT INTO slots (date, time, restaurantid, seats_remaining) VALUES ($1,$2,$3,$4)',
+        [date, time, restaurantId, data.rows[0].seats - party], (err, data) => {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log('new slot created!')
+          }
+        }
+      );
+    }
+  });
+
+const updateSingleSlot = ({
+  slotId, seatsRemaining
+}) => client.query(
+  'UPDATE slots SET seats_remaining = ($1) WHERE id = ($2)',
+  [seatsRemaining, slotId],
+);
 
 const addRestaurantInfo = ({
   id, name, seats,
@@ -118,10 +169,11 @@ const addRestaurantInfo = ({
 module.exports = {
   client,
   bookingsToday,
-  getOpenSeats,
   getMaxSeats,
   genReservationSlots,
   addReservation,
   addRestaurantInfo,
   newGetOpenSeats,
+  addSlot,
+  updateSingleSlot,
 };
