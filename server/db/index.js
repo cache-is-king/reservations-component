@@ -122,7 +122,6 @@ const updateSlots = ({
       console.log(err)
     } else {
       const slot = data.rows[0]
-      console.log(slot)
       if (slot) {
         updateSingleSlot({ slotId: slot.id, seatsRemaining: slot.remaining - party });
       }
