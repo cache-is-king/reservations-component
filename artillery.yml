@@ -1,0 +1,22 @@
+config:
+  target: 'http://localhost:8081'
+  phases:
+    - duration: 60
+      arrivalCount: 1000
+  defaults:
+    headers:
+      x-my-service-auth: '987401838271002188298567'
+scenarios:
+  - flow:
+    - loop:
+      - loop:
+        - get: 
+            url: "/restaurants/{{ $loopElement}}/reservations/2018-04-09"
+        over:
+          - 56
+          - 7890
+          - 643912
+          - 8594022
+          - 356
+      count: 5
+
