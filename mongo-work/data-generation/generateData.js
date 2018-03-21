@@ -104,7 +104,7 @@ const genReservationsForRestaurant = (numberOfReservations, startingReservationI
         time,
         name: faker.name.firstName(),
         party: partySize,
-        timestamp: '03-19-2018',
+        timestamp: todayDate,
       });
       reservationCountTracker += 1;
       currentReservationIndex += 1;
