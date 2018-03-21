@@ -13,7 +13,7 @@ jest.mock('pg', () => ({
             rows: [{ count: 199 }],
           });
         });
-      } else if (query === 'SELECT time,(MAX(restaurants.seats)-SUM(party)) AS remaining FROM reservations INNER JOIN restaurants ON restaurants.id = reservations.restaurantid WHERE date=$1 AND restaurantid=$2 GROUP BY time') {
+      } else if (query === 'SELECT time,seats_remaining AS remaining FROM slots WHERE date=$1 AND restaurantid=$2') {
         return new Promise((resolve) => {
           resolve({
             rows: [

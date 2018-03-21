@@ -30,9 +30,9 @@ describe('db/index.js', () => {
   describe('getOpenSeats', () => {
     test('should run select query from DB', () => {
       const testItem = { restaurantId: 305, date: '2018-04-01' };
-      db.getOpenSeats(testItem)
+      db.newGetOpenSeats(testItem)
         .then((result) => {
-          expect(result.query).toBe('SELECT time,(MAX(restaurants.seats)-SUM(party)) AS remaining FROM reservations INNER JOIN restaurants ON restaurants.id = reservations.restaurantid WHERE date=$1 AND restaurantid=$2 GROUP BY time');
+          expect(result.query).toBe('SELECT time,seats_remaining AS remaining FROM slots WHERE date=$1 AND restaurantid=$2');
           expect(result.params).toHaveLength(2);
           expect(result.params).toEqual(expect.arrayContaining([
             testItem.date, testItem.restaurantId]));

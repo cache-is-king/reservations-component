@@ -3,10 +3,13 @@ const faker = require('faker');
 const fs = require('fs');
 
 
-// make a reservationSize array for reservation Size distribution
+// make arrays for reservation Size and # reservations distributions
 const reservationSizes = PD.rpois(1000, 30);
+const numberReservations = PD.rpois(150, 15);
+const todayDate = '03-19-2018';
+const oneMonthFromNow = '04-19-2018';
 
-//helper functions for restaurant name generation
+// helper functions for restaurant name generation
 const capitalize = (str) => {
   const words = str.split(' ');
   const output = words.map((word) => {
@@ -77,11 +80,43 @@ const genRestName = (iteration) => {
   return randomFn[iteration]();
 };
 
-const genReservationsForRestaurant = () => {
-  //fill this in
-}
+const genReservationsForRestaurant = (numberOfReservations, startingReservationIndex, maxSeats) => {
+  //this returns an array of reservations.
+  const outputArray = [];
+  const existingReservations = {};
+  let reservationCountTracker = 0;
+  let currentReservationIndex = startingReservationIndex;
 
-//this generates 10 million restaurants. In this, the first 1 million should get reservations.
+  while (reservationCountTracker < numberOfReservations) {
+    let partySize = getRandomBetween(1, 11);
+    let date = faker.date.between(todayDate, oneMonthFromNow);
+    date = date.toISOString().slice(0, 10);
+    let time = getRandomBetween(17, 23);
+
+    existingReservations[[date, time]] = existingReservations[[date, time]] ?
+      existingReservations[[date, time]] : maxSeats;
+
+    if (partySize <= existingReservations[[date, time]]) {
+      existingReservations[[date, time]] = existingReservations[[date, time]] - partySize;
+      outputArray.push({
+        id: currentReservationIndex,
+        date,
+        time,
+        name: faker.name.firstName(),
+        party: partySize,
+        timestamp: todayDate,
+      });
+      reservationCountTracker += 1;
+      currentReservationIndex += 1;
+    }
+  }
+
+  return outputArray;
+};
+// since map lengths will be different, we will have to keep track of the starting restaurant index
+let reservationIndex = 0;
+
+// this generates 10 million restaurants. In this, the first 1 million should get reservations.
 for (let i = 0; i < 10; i += 1) {
   const output = {};
   let duplicateTracker = 0;
@@ -101,18 +136,39 @@ for (let i = 0; i < 10; i += 1) {
     output[restName] = true;
   }
 
+  // if restaurant < 1000000, we want to write 10 files since after adding reservations, it will be too large.
   if (i === 0) {
-    //fill this in
+    for (let j = 0; j < 20; j += 1) {
+      console.log('J ', j);
+      
+      const toFile = Object.keys(output).slice(j * 50000, (j + 1) * 50000).map((output, index) => {
+        const requiredReservations = numberReservations[getRandomBetween(0, 150)];
+        let startingIndex = reservationIndex
+        reservationIndex += requiredReservations;
+        const seats = reservationSizes[getRandomBetween(0, 1000)]
+        return {
+          id: (j * 50000) + index,
+          name: output,
+          seats,
+          reservations: genReservationsForRestaurant(requiredReservations, startingIndex, seats),
+        };
+      });
+      
+      const jsonString = JSON.stringify(toFile, null, 2);
+      fs.writeFileSync(`./data/restaurantsWithReservations/output${j + 1}.js`, jsonString);
+    }
+  } else {
+    const toFile = Object.keys(output).map((output, index) => {
+      return {
+        id: ((i * 1000000) + index),
+        name: output,
+        seats: reservationSizes[getRandomBetween(0, 1000)],
+        reservations: [],
+      };
+    });
+    const jsonString = JSON.stringify(toFile, null, 2);
+
+    fs.writeFileSync(`./data/restaurantsNoReservations/output${i}.js`, jsonString);
   }
 
-
-  const toFile = Object.keys(output).map(
-    (output, index) => {
-      return { id: (i * 1000000) + index, name: output, seats: reservationSizes[getRandomBetween(0, 1000)] };
-    });
-
-  const jsonString = JSON.stringify(toFile, null, 2);
-
-  console.log(`writing to file ${i + 1}`);
-  fs.writeFileSync(`./data/output${i + 1}.js`, `module.exports = ${jsonString}`);
 }
